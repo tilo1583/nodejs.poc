@@ -1,0 +1,89 @@
+<!DOCTYPE html>  
+<html>  
+    <head> 
+	<style>
+	
+#newspaper-a
+{
+	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+	font-size: 12px;
+	margin: 45px;
+	width: 90%;
+	text-align: left;
+	border-collapse: collapse;
+	border: 1px solid #69c;
+}
+#newspaper-a th
+{
+	padding: 12px 17px 12px 17px;
+	font-weight: normal;
+	font-size: 14px;
+	color: #039;
+	border-bottom: 1px dashed #69c;
+}
+#newspaper-a td
+{
+	padding: 7px 17px 7px 17px;
+	color: #669;
+}
+#newspaper-a tbody tr:hover td
+{
+	color: #339;
+	background: #d0dafd;
+}
+	</style>
+	
+        <title>Monitor Rest Queues</title>  
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>  
+    </head>  
+    <body>
+	<table id="newspaper-a">
+	<thead>
+    	<tr>
+            <th scope="col">Server</th>
+            <th scope="col">Port</th>
+            <th scope="col">Queues,Count</th>
+        </tr>
+    	</thead>
+	
+	<tbody>
+	</tbody>
+	</table>
+	<script type="text/javascript">  
+
+	function load_queues()
+	{
+           var index = 0;
+	   var $maintable = $('#newspaper-a')
+	   $.getJSON("/servers", function(servers) {  
+	        $.each(servers, function() {
+ 		  
+	 	  var $tbl = $('<table>').attr('id', 'basicTable')
+	
+		  var $tr = $('<tr>').attr('id', 'basictr')
+		  
+		  var $td = $('<td>').attr('id', 'basictd')
+  		  var $ul = $('<ul>').attr('id', 'basicul')
+
+		  var host  = this.host;
+		 
+		  $tr.append("<td>"+host+"</td>"+"<td>"+this.port+"</td>");
+		  var url = "/status?server="+host
+		  $.getJSON(url, function(queues) { 
+			$.each(queues, function() {
+ 	     		   $ul.append("<li>"+this.Name+","+this.Count+"</li>"); 		   
+			}); 
+		  }); 
+		  $td.append($ul);
+		  $tr.append($td);
+		  $maintable.append($tr)   		  		 	  
+                });	
+	    });	      
+	}		
+	
+	load_queues();
+	
+        </script>  
+	
+    </body>  
+</html> 
